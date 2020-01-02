@@ -5,6 +5,7 @@ import random
 import tensorflow as tf
 import tqdm
 import csv
+import numpy as np
 
 
 def load_dataset(enc, path, combine):
@@ -63,6 +64,67 @@ def binary_search(f, lo, hi):
         else:
             lo = mid
     return hi
+
+class FileSampler(object):
+
+    def __init__(self, path, enc, length=None, eager=True):
+        self._total_size = None
+        self._encode_path = None
+
+        self.path = path
+        self.enc = enc
+        self.length = length
+
+
+
+
+    def encode_file():
+        n_toks = 0
+        pbar = tqdm.tqdm()
+        with open(self.path, 'r') as in_f, open(self.encode_path, 'wb') as out_f:
+            line = in_f.readline()
+            tokens = enc.encode(line)
+            for t in tokens:
+                out_f.write(t)
+            pbar.update()
+        pbar.close()
+
+    def sample(self, length=None):
+        if not length:
+            length = self.length
+
+        assert(length)
+
+        ind = np.random.randint(0, self.total_size-length)
+
+        with open(self.encode_path, 'rb') as enc_f:
+            enc_f.seek(ind)
+            return enc_f.read(length)
+            
+
+
+
+    @property
+    def total_size(self):
+        if not self._total_size:
+            with open(self.encode_path, 'rb') as ofile:
+                ofile.seek(0, 2)
+                self._total_size = ofile.tell()
+        return self._total_size
+
+
+    @property
+    def encode_path(self):
+        if not self._encode_path:
+            root, ext = os.path.splitext(self.path)
+            self._encode_path = root + '_encoded.txt'
+
+            if not os.path.exists(self._encode_path):
+                print('encoding to file')
+                self.encode_file()
+
+        return self._encode_path
+
 
 
 class Sampler(object):

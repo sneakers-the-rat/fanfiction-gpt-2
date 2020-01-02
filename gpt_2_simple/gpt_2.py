@@ -22,7 +22,7 @@ except:
     pass
 
 from gpt_2_simple.src import model, sample, encoder, memory_saving_gradients
-from gpt_2_simple.src.load_dataset import load_dataset, Sampler
+from gpt_2_simple.src.load_dataset import load_dataset, Sampler, FileSampler
 from gpt_2_simple.src.accumulate import AccumulatingOptimizer
 
 assert tf.__version__ < '2.0.0', "gpt-2-simple currently does not support " \
@@ -257,8 +257,9 @@ def finetune(sess,
     saver.restore(sess, ckpt)
 
     print('Loading dataset...')
-    chunks = load_dataset(enc, dataset, combine)
-    data_sampler = Sampler(chunks)
+    #chunks = load_dataset(enc, dataset, combine)
+    #data_sampler = Sampler(chunks)
+    data_sampler = FileSampler(enc, dataset)
     print('dataset has', data_sampler.total_size, 'tokens')
     print('Training...')
 
