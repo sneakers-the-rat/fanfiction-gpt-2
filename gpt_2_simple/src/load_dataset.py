@@ -67,7 +67,7 @@ def binary_search(f, lo, hi):
 
 class FileSampler(object):
 
-    def __init__(self, path, enc, length=None, eager=True):
+    def __init__(self, enc, path, length=None, eager=True):
         self._total_size = None
         self._encode_path = None
 
@@ -100,7 +100,7 @@ class FileSampler(object):
         with open(self.encode_path, 'rb') as enc_f:
             enc_f.seek(ind)
             return enc_f.read(length)
-            
+
 
 
 
